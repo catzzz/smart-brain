@@ -7,6 +7,8 @@ import Register from './components/Register/Register';
 import Logo from './components/Logo/Logo';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import Rank from './components/Rank/Rank';
+import Modal from './components/Modal/Modal'
+import Profile from './components/Profile/Profile';
 import './App.css';
 
 const particlesOptions = {
@@ -30,12 +32,15 @@ const initialState = {
   // route: 'home',
   isSignedIn: false,
   // isSignedIn:true,
+  isProfileOpen:false,
   user: {
     id: '',
     name: '',
     email: '',
     entries: 0,
-    joined: ''
+    joined: '',
+    pet:'',
+    age:''
   }
 }
 
@@ -116,17 +121,34 @@ class App extends Component {
     this.setState({route: route});
   }
 
+  toggleModal = () => {
+    console.log('toggle Modal')
+    this.setState(state => ({
+      ...state,
+      isProfileOpen: !state.isProfileOpen,
+    }));
+  }
   render() {
-    const { isSignedIn, imageUrl, route, box } = this.state;
+    const { isSignedIn, imageUrl, route, box, isProfileOpen , user} = this.state;
     return (
       <div className="App">
          <Particles className='particles'
           params={particlesOptions}
         />
-        <Navigation isSignedIn={isSignedIn} onRouteChange={this.onRouteChange} />
+        <Navigation isSignedIn={isSignedIn} onRouteChange={this.onRouteChange} toggleModal = {this.toggleModal} />
+        { isProfileOpen && <Modal>
+           <Profile 
+            isProfileOpen = {isProfileOpen} 
+            toggleModal = {this.toggleModal}
+             user={user} 
+             loadUser={this.loadUser}/>
+           </Modal>
+
+        }
         { route === 'home'
           ? <div>
               <Logo />
+      
               <Rank
                 name={this.state.user.name}
                 entries={this.state.user.entries}
